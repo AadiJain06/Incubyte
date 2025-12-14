@@ -21,14 +21,14 @@ export interface UpdateSweetRequest {
 }
 
 // Get API URL from environment variable, with fallback
-// In production, this should be set to: https://incubyte-sweet.onrender.com/api
-// Note: VITE_API_URL must be set in Vercel environment variables
+// IMPORTANT: Set VITE_API_URL in Vercel to: https://incubyte-sweet.onrender.com/api
+// Or set it to: https://incubyte-sweet.onrender.com (code will auto-add /api)
 const getApiBaseUrl = () => {
   let baseUrl: string;
   
   // Check if VITE_API_URL is explicitly set
   if (import.meta.env.VITE_API_URL) {
-    baseUrl = import.meta.env.VITE_API_URL;
+    baseUrl = import.meta.env.VITE_API_URL.trim();
   } else if (import.meta.env.PROD) {
     // Production fallback
     baseUrl = 'https://incubyte-sweet.onrender.com';
@@ -37,9 +37,13 @@ const getApiBaseUrl = () => {
     baseUrl = 'http://localhost:3001';
   }
   
+  // Remove trailing slash if present
+  baseUrl = baseUrl.replace(/\/+$/, '');
+  
   // Ensure /api is appended if not already present
-  if (!baseUrl.endsWith('/api')) {
-    baseUrl = baseUrl.endsWith('/') ? `${baseUrl}api` : `${baseUrl}/api`;
+  // Check if it ends with /api (case-insensitive)
+  if (!baseUrl.toLowerCase().endsWith('/api')) {
+    baseUrl = `${baseUrl}/api`;
   }
   
   return baseUrl;
@@ -48,7 +52,9 @@ const getApiBaseUrl = () => {
 const API_BASE_URL = getApiBaseUrl();
 
 // Log API URL for debugging (both dev and prod)
-console.log('API Base URL:', API_BASE_URL);
+console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('🌍 Environment:', import.meta.env.MODE);
+console.log('📦 VITE_API_URL from env:', import.meta.env.VITE_API_URL || 'NOT SET');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -63,13 +69,19 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Log request for debugging
+  console.log(`📤 ${config.method?.toUpperCase()} ${config.url}`);
   return config;
 });
 
 // Handle 401 errors (unauthorized)
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+    return response;
+  },
   (error) => {
+    console.error(`❌ ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response?.status || 'Network Error'}`);
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
