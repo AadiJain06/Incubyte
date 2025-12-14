@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { SWEET_CATEGORIES } from '@/types/sweet';
-import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,

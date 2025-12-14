@@ -57,9 +57,9 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const handlePurchase = async (id: string, quantity: number = 1) => {
+  const handlePurchase = async (sweet: Sweet) => {
     try {
-      await sweetsAPI.purchase(id, quantity);
+      await sweetsAPI.purchase(sweet.id, 1);
       await loadSweets();
     } catch (err: any) {
       alert(err.response?.data?.error || 'Purchase failed. Please try again.');
@@ -129,9 +129,7 @@ export const Dashboard: React.FC = () => {
                   key={sweet.id}
                   sweet={sweet}
                   onPurchase={handlePurchase}
-                  isAdmin={isAdmin}
-                  onEdit={handleSweetUpdated}
-                  onDelete={handleSweetDeleted}
+                  isAuthenticated={!!user}
                 />
               ))}
             </div>

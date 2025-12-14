@@ -32,7 +32,7 @@ export const getCategoryDefaultImage = (category: string): string => {
   return categoryImages[category] || chocolateTruffles;
 };
 
-export const getSweetImage = (name: string, category: string, imageUrl: string | null): string => {
+export const getSweetImage = (name: string, category: string, imageUrl: string | null | undefined): string => {
   // First check if we have a specific image for this sweet
   if (sweetImages[name]) {
     return sweetImages[name];

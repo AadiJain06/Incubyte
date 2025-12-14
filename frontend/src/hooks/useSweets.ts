@@ -109,7 +109,7 @@ export function usePurchaseSweet() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ sweetId, quantity, userId }: { sweetId: string; quantity: number; userId: string }) => {
+    mutationFn: async ({ sweetId, quantity }: { sweetId: string; quantity: number; userId?: string }) => {
       return await sweetsAPI.purchase(sweetId, quantity);
     },
     onSuccess: () => {
