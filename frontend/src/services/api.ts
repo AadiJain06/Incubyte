@@ -20,7 +20,12 @@ export interface UpdateSweetRequest {
   image_url?: string | null;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Get API URL from environment variable, with fallback
+// In production, this should be set to: https://incubyte-sweet.onrender.com/api
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD 
+    ? 'https://incubyte-sweet.onrender.com/api' 
+    : 'http://localhost:3001/api');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
