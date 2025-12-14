@@ -33,6 +33,7 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+backend/sweet_shop.db
 
 # TypeScript
 *.tsbuildinfo
