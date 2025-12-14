@@ -22,7 +22,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://incubyte-sweet.vercel.app',
+    'https://incubyte-frontend-navy.vercel.app',
     /\.vercel\.app$/
   ],
   credentials: true
