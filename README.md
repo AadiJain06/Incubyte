@@ -2,6 +2,18 @@
 
 A full-stack web application for managing a sweet shop inventory, built with TypeScript, Express, React, and SQLite. This project demonstrates Test-Driven Development (TDD), clean coding practices, and modern development workflows.
 
+## 🎨 Screenshots
+
+### Login Page
+![Login Page](./login.png)
+
+### Dashboard
+![Dashboard](./dashboard.png)
+
+### Admin Panel
+![Admin Panel](./admin-panel.png)
+
+*Note: Screenshots should be added to a `screenshots/` directory in the repository.*
 ## 🎯 Features
 
 ### Backend API (RESTful)
@@ -236,19 +248,6 @@ UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
 **Option B: Using a SQLite GUI tool** (like DB Browser for SQLite)
 - Open `backend/sweet_shop.db`
 - Run: `UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';`
-
-## 🎨 Screenshots
-
-### Login Page
-![Login Page](./login.png)
-
-### Dashboard
-![Dashboard](./dashboard.png)
-
-### Admin Panel
-![Admin Panel](./admin-panel.png)
-
-*Note: Screenshots should be added to a `screenshots/` directory in the repository.*
 
 ## 🤖 My AI Usage
 
