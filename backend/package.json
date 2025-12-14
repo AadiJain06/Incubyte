@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "node -e \"const fs=require('fs');const path=require('path');const src=path.join('src','database','schema.sql');const dest=path.join('dist','database','schema.sql');if(fs.existsSync(src)){fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(src,dest);}\"",
     "start": "node dist/index.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",

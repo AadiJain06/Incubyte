@@ -6,7 +6,30 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const initializeDatabase = async () => {
   try {
-    const schemaPath = path.join(__dirname, 'schema.sql');
+    // In production (dist), __dirname is dist/database, so we need to go up to src/database
+    // In development, __dirname is src/database
+    let schemaPath = path.join(__dirname, 'schema.sql');
+    
+    // If file doesn't exist in dist, try the source directory
+    if (!fs.existsSync(schemaPath)) {
+      // Try going up from dist/database to src/database
+      schemaPath = path.join(__dirname, '../../src/database/schema.sql');
+    }
+    
+    // If still not found, try relative to process.cwd()
+    if (!fs.existsSync(schemaPath)) {
+      schemaPath = path.join(process.cwd(), 'src/database/schema.sql');
+    }
+    
+    // Final fallback: try in backend/src/database
+    if (!fs.existsSync(schemaPath)) {
+      schemaPath = path.join(process.cwd(), 'backend/src/database/schema.sql');
+    }
+    
+    if (!fs.existsSync(schemaPath)) {
+      throw new Error(`Schema file not found. Tried: ${schemaPath}`);
+    }
+    
     const schema = fs.readFileSync(schemaPath, 'utf-8');
     
     // Remove comments and split by semicolon
