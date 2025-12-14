@@ -1,4 +1,5 @@
-import Database from 'better-sqlite3';
+import sqlite3 from 'sqlite3';
+import { promisify } from 'util';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
@@ -13,10 +14,22 @@ if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-const db = new Database(dbPath);
+// Create database connection
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database:', err);
+  } else {
+    console.log('Connected to SQLite database');
+  }
+});
 
 // Enable foreign keys
-db.pragma('foreign_keys = ON');
+db.run('PRAGMA foreign_keys = ON');
+
+// Promisify database methods
+const dbRun = promisify(db.run.bind(db));
+const dbGet = promisify(db.get.bind(db));
+const dbAll = promisify(db.all.bind(db));
 
 // Wrapper to make query interface similar to PostgreSQL
 export const query = async (text: string, params: any[] = []) => {
@@ -44,20 +57,19 @@ export const query = async (text: string, params: any[] = []) => {
     const isSelect = trimmedSql.startsWith('SELECT');
     
     if (isSelect) {
-      const stmt = db.prepare(sql);
-      const rows = stmt.all(...sqliteParams);
+      const rows = await dbAll(sql, sqliteParams);
       const duration = Date.now() - start;
       console.log('Executed query', { text: sql, duration, rows: rows.length });
       return { rows, rowCount: rows.length };
     } else {
-      const stmt = db.prepare(sql);
-      const result = stmt.run(...sqliteParams);
+      const result = await dbRun(sql, sqliteParams);
       const duration = Date.now() - start;
-      console.log('Executed query', { text: sql, duration, changes: result.changes });
+      const changes = (result as any).changes || 0;
+      console.log('Executed query', { text: sql, duration, changes });
       return { 
         rows: [], 
-        rowCount: result.changes || 0,
-        lastInsertRowid: result.lastInsertRowid 
+        rowCount: changes,
+        lastInsertRowid: (result as any).lastID 
       };
     }
   } catch (error) {
@@ -66,37 +78,43 @@ export const query = async (text: string, params: any[] = []) => {
   }
 };
 
-// Synchronous query for initialization
+// Synchronous query for initialization (using callback-based API)
 export const querySync = (text: string, params: any[] = []) => {
-  try {
-    let sql = text;
-    const sqliteParams: any[] = [];
-    
-    if (text.includes('$')) {
-      sql = text.replace(/\$(\d+)/g, (match, num) => {
-        const index = parseInt(num) - 1;
-        if (index >= 0 && index < params.length) {
-          sqliteParams.push(params[index]);
-        }
-        return '?';
-      });
-    } else {
-      sqliteParams.push(...params);
-    }
+  return new Promise((resolve, reject) => {
+    try {
+      let sql = text;
+      const sqliteParams: any[] = [];
+      
+      if (text.includes('$')) {
+        sql = text.replace(/\$(\d+)/g, (match, num) => {
+          const index = parseInt(num) - 1;
+          if (index >= 0 && index < params.length) {
+            sqliteParams.push(params[index]);
+          }
+          return '?';
+        });
+      } else {
+        sqliteParams.push(...params);
+      }
 
-    const trimmedSql = sql.trim().toUpperCase();
-    const isSelect = trimmedSql.startsWith('SELECT');
-    const stmt = db.prepare(sql);
-    
-    if (isSelect) {
-      return { rows: stmt.all(...sqliteParams), rowCount: 0 };
-    } else {
-      return stmt.run(...sqliteParams);
+      const trimmedSql = sql.trim().toUpperCase();
+      const isSelect = trimmedSql.startsWith('SELECT');
+      
+      if (isSelect) {
+        db.all(sql, sqliteParams, (err, rows) => {
+          if (err) reject(err);
+          else resolve({ rows, rowCount: rows?.length || 0 });
+        });
+      } else {
+        db.run(sql, sqliteParams, function(err) {
+          if (err) reject(err);
+          else resolve({ changes: this.changes, lastID: this.lastID });
+        });
+      }
+    } catch (error) {
+      reject(error);
     }
-  } catch (error) {
-    console.error('Database query error', { text, error });
-    throw error;
-  }
+  });
 };
 
 export const getClient = () => {

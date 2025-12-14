@@ -1,4 +1,4 @@
-import { querySync } from './connection';
+import { query } from './connection';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,7 +15,7 @@ export const initializeDatabase = async () => {
 
     for (const statement of statements) {
       if (statement) {
-        querySync(statement);
+        await query(statement);
       }
     }
 
