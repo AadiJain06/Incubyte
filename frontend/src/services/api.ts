@@ -81,7 +81,13 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error(`❌ ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response?.status || 'Network Error'}`);
+    const fullUrl = error.config?.baseURL + error.config?.url;
+    const status = error.response?.status || 'Network Error';
+    const statusText = error.response?.statusText || '';
+    console.error(`❌ ${error.config?.method?.toUpperCase()} ${fullUrl} - ${status} ${statusText}`);
+    if (error.response?.data) {
+      console.error('   Response data:', error.response.data);
+    }
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
