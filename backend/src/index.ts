@@ -35,10 +35,23 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Sweet Shop API is running' });
 });
 
+// Test endpoint to verify routes are working
+app.get('/api/test', (req, res) => {
+  res.json({ status: 'ok', message: 'API routes are working', timestamp: new Date().toISOString() });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/sweets', sweetRoutes);
 app.use('/api/purchases', purchaseRoutes);
+
+// Debug: Log all registered routes
+console.log('Registered routes:');
+console.log('  POST /api/auth/register');
+console.log('  POST /api/auth/login');
+console.log('  GET /api/sweets');
+console.log('  GET /api/sweets/search');
+console.log('  GET /api/purchases/history');
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
