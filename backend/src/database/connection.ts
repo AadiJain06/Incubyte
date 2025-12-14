@@ -6,6 +6,13 @@ import fs from 'fs';
 
 dotenv.config();
 
+// Type definitions for query results
+export interface QueryResult {
+  rows: any[];
+  rowCount: number;
+  lastInsertRowid?: number;
+}
+
 const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../../sweet_shop.db');
 
 // Ensure the directory exists
@@ -32,7 +39,7 @@ const dbGet = promisify(db.get.bind(db));
 const dbAll = promisify(db.all.bind(db));
 
 // Wrapper to make query interface similar to PostgreSQL
-export const query = async (text: string, params: any[] = []) => {
+export const query = async (text: string, params: any[] = []): Promise<QueryResult> => {
   const start = Date.now();
   try {
     // SQLite uses ? placeholders, but we'll support both $1 and ? for compatibility

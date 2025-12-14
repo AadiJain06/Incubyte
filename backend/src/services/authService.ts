@@ -88,7 +88,11 @@ export class AuthService {
       throw new Error('JWT secret not configured');
     }
 
-    return jwt.sign({ id, email, role }, jwtSecret, { expiresIn: jwtExpiresIn });
+    const options: SignOptions = {
+      expiresIn: jwtExpiresIn,
+    };
+
+    return jwt.sign({ id, email, role }, jwtSecret, options);
   }
 }
 
