@@ -1,6 +1,8 @@
 import { query } from './connection';
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 export const initializeDatabase = async () => {
   try {
@@ -46,9 +48,41 @@ export const initializeDatabase = async () => {
       }
     }
 
+    // Create default admin user if it doesn't exist
+    await createDefaultAdmin();
+
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
     throw error;
+  }
+};
+
+const createDefaultAdmin = async () => {
+  try {
+    const adminEmail = 'admin@example.com';
+    const adminPassword = 'admin123';
+    
+    // Check if admin already exists
+    const existingAdmin = await query('SELECT id FROM users WHERE email = $1', [adminEmail]);
+    
+    if (existingAdmin.rows.length === 0) {
+      // Hash password
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      const adminId = uuidv4();
+      
+      // Insert admin user
+      await query(
+        'INSERT INTO users (id, email, password, role) VALUES ($1, $2, $3, $4)',
+        [adminId, adminEmail, hashedPassword, 'admin']
+      );
+      
+      console.log('Default admin user created:');
+      console.log('  Email: admin@example.com');
+      console.log('  Password: admin123');
+    }
+  } catch (error) {
+    console.error('Error creating default admin:', error);
+    // Don't throw - allow app to continue even if admin creation fails
   }
 };

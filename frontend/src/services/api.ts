@@ -1,5 +1,24 @@
 import axios from 'axios';
-import { AuthResponse, LoginCredentials, RegisterCredentials, Sweet, CreateSweetRequest, UpdateSweetRequest } from '../types';
+import { AuthResponse, LoginCredentials, RegisterCredentials } from '../types';
+import { Sweet } from '../types/sweet';
+
+export interface CreateSweetRequest {
+  name: string;
+  category: string;
+  description?: string | null;
+  price: number;
+  quantity: number;
+  image_url?: string | null;
+}
+
+export interface UpdateSweetRequest {
+  name?: string;
+  category?: string;
+  description?: string | null;
+  price?: number;
+  quantity?: number;
+  image_url?: string | null;
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -26,7 +45,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = '/auth';
     }
     return Promise.reject(error);
   }
@@ -57,11 +76,23 @@ export const sweetsAPI = {
     return response.data;
   },
   create: async (data: CreateSweetRequest): Promise<Sweet> => {
-    const response = await api.post<Sweet>('/sweets', data);
+    // Backend doesn't support description/image_url yet, so we only send supported fields
+    const response = await api.post<Sweet>('/sweets', {
+      name: data.name,
+      category: data.category,
+      price: data.price,
+      quantity: data.quantity,
+    });
     return response.data;
   },
   update: async (id: string, data: UpdateSweetRequest): Promise<Sweet> => {
-    const response = await api.put<Sweet>(`/sweets/${id}`, data);
+    // Backend doesn't support description/image_url yet, so we only send supported fields
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.category !== undefined) updateData.category = data.category;
+    if (data.price !== undefined) updateData.price = data.price;
+    if (data.quantity !== undefined) updateData.quantity = data.quantity;
+    const response = await api.put<Sweet>(`/sweets/${id}`, updateData);
     return response.data;
   },
   delete: async (id: string): Promise<void> => {

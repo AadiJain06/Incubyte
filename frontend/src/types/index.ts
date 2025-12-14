@@ -9,8 +9,10 @@ export interface Sweet {
   id: string;
   name: string;
   category: string;
+  description?: string | null;
   price: number;
   quantity: number;
+  image_url?: string | null;
   created_at: string;
   updated_at: string;
 }
