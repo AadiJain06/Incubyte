@@ -1,0 +1,26 @@
+{
+  "name": "sweet-shop-management",
+  "version": "1.0.0",
+  "description": "Full-stack Sweet Shop Management System",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test"
+  },
+  "keywords": [
+    "sweet-shop",
+    "management-system",
+    "tdd",
+    "full-stack"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
