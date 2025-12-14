@@ -28,7 +28,7 @@ export function Header() {
             <Candy className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-display text-xl font-bold text-gradient-candy">
-            Sweet Shop
+            Kata Sweet Shop
           </span>
         </Link>
 
