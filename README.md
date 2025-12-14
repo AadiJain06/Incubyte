@@ -240,13 +240,13 @@ UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
 ## 🎨 Screenshots
 
 ### Login Page
-![Login Page](screenshots/login.png)
+![Login Page](./login.png)
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](./dashboard.png)
 
 ### Admin Panel
-![Admin Panel](screenshots/admin-panel.png)
+![Admin Panel](./admin-panel.png)
 
 *Note: Screenshots should be added to a `screenshots/` directory in the repository.*
 
