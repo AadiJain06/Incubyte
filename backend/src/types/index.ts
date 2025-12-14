@@ -16,13 +16,7 @@ export interface Sweet {
   updated_at: Date;
 }
 
-export interface AuthRequest extends Express.Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-  };
-}
+// AuthRequest is now handled via global Express namespace extension in middleware/auth.ts
 
 export interface RegisterRequest {
   email: string;

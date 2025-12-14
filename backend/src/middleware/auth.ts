@@ -1,9 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthRequest } from '../types';
+
+// Extend Express Request to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        email: string;
+        role: string;
+      };
+    }
+  }
+}
 
 export const authenticateToken = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): void => {
@@ -31,7 +43,7 @@ export const authenticateToken = (
 };
 
 export const requireAdmin = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): void => {

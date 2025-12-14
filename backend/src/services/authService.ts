@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { query } from '../database/connection';
 import { User, RegisterRequest, LoginRequest } from '../types';
@@ -88,11 +88,12 @@ export class AuthService {
       throw new Error('JWT secret not configured');
     }
 
-    const options: SignOptions = {
-      expiresIn: jwtExpiresIn,
-    };
-
-    return jwt.sign({ id, email, role }, jwtSecret, options);
+    // Use type assertion to bypass strict type checking for JWT sign
+    return (jwt.sign as any)(
+      { id, email, role },
+      jwtSecret,
+      { expiresIn: jwtExpiresIn }
+    );
   }
 }
 

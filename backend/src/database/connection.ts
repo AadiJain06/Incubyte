@@ -33,10 +33,24 @@ const db = new sqlite3.Database(dbPath, (err) => {
 // Enable foreign keys
 db.run('PRAGMA foreign_keys = ON');
 
-// Promisify database methods
-const dbRun = promisify(db.run.bind(db));
-const dbGet = promisify(db.get.bind(db));
-const dbAll = promisify(db.all.bind(db));
+// Helper functions to promisify sqlite3 callbacks
+const dbAll = (sql: string, params: any[]): Promise<any[]> => {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows || []);
+    });
+  });
+};
+
+const dbRun = (sql: string, params: any[]): Promise<{ changes: number; lastID: number }> => {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function(err) {
+      if (err) reject(err);
+      else resolve({ changes: this.changes, lastID: this.lastID });
+    });
+  });
+};
 
 // Wrapper to make query interface similar to PostgreSQL
 export const query = async (text: string, params: any[] = []): Promise<QueryResult> => {
@@ -64,19 +78,19 @@ export const query = async (text: string, params: any[] = []): Promise<QueryResu
     const isSelect = trimmedSql.startsWith('SELECT');
     
     if (isSelect) {
-      const rows = await dbAll(sql, sqliteParams);
+      const rows: any[] = await dbAll(sql, sqliteParams);
       const duration = Date.now() - start;
       console.log('Executed query', { text: sql, duration, rows: rows.length });
       return { rows, rowCount: rows.length };
     } else {
       const result = await dbRun(sql, sqliteParams);
       const duration = Date.now() - start;
-      const changes = (result as any).changes || 0;
+      const changes = result.changes || 0;
       console.log('Executed query', { text: sql, duration, changes });
       return { 
         rows: [], 
         rowCount: changes,
-        lastInsertRowid: (result as any).lastID 
+        lastInsertRowid: result.lastID 
       };
     }
   } catch (error) {
