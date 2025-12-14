@@ -33,11 +33,8 @@ export class PurchaseService {
         p.quantity,
         p.total_price,
         p.created_at,
-        json_object(
-          'name', s.name,
-          'category', s.category,
-          'image_url', s.image_url
-        ) as sweet
+        s.name as sweet_name,
+        s.category as sweet_category
       FROM purchases p
       LEFT JOIN sweets s ON p.sweet_id = s.id
       WHERE p.user_id = $1
@@ -52,7 +49,11 @@ export class PurchaseService {
       quantity: row.quantity,
       total_price: row.total_price,
       created_at: row.created_at,
-      sweet: row.sweet ? JSON.parse(row.sweet) : null,
+      sweet: row.sweet_name ? {
+        name: row.sweet_name,
+        category: row.sweet_category,
+        image_url: null,
+      } : null,
     }));
   }
 }

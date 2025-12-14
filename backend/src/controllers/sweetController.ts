@@ -107,27 +107,58 @@ export class SweetController {
     }
   };
 
-  purchase = async (req: Request, res: Response): Promise<void> => {
+  purchase = async (req: Request & { user?: { id: string } }, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const { quantity } = req.body;
+
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
 
       if (!quantity || typeof quantity !== 'number' || quantity <= 0) {
         res.status(400).json({ error: 'Valid quantity is required' });
         return;
       }
 
-      const sweet = await this.sweetService.purchase(id, quantity);
+      // Get sweet details before purchase
+      const sweet = await this.sweetService.findById(id);
       if (!sweet) {
         res.status(404).json({ error: 'Sweet not found' });
         return;
       }
-      res.status(200).json(sweet);
+
+      if (sweet.quantity < quantity) {
+        res.status(400).json({ error: 'Insufficient stock' });
+        return;
+      }
+
+      // Calculate total price
+      const totalPrice = sweet.price * quantity;
+
+      // Record purchase
+      await this.purchaseService.createPurchase(
+        req.user.id,
+        id,
+        quantity,
+        totalPrice
+      );
+
+      // Update sweet quantity
+      const updatedSweet = await this.sweetService.purchase(id, quantity);
+      if (!updatedSweet) {
+        res.status(404).json({ error: 'Sweet not found' });
+        return;
+      }
+
+      res.status(200).json(updatedSweet);
     } catch (error: any) {
       if (error.message === 'Insufficient stock') {
         res.status(400).json({ error: error.message });
         return;
       }
+      console.error('Purchase error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };

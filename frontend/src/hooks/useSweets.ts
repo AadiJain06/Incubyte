@@ -103,6 +103,7 @@ export function usePurchaseSweet() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sweets'] });
+      queryClient.invalidateQueries({ queryKey: ['purchases'] });
       toast.success('Purchase successful!');
     },
     onError: (error: any) => {
