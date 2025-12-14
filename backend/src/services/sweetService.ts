@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { query } from '../database/connection';
 import { Sweet, CreateSweetRequest, UpdateSweetRequest, SearchSweetsQuery } from '../types';
 
@@ -5,11 +6,19 @@ export class SweetService {
   async create(data: CreateSweetRequest): Promise<Sweet> {
     const { name, category, price, quantity } = data;
 
+    // Generate UUID for sweet
+    const sweetId = uuidv4();
+
+    await query(
+      `INSERT INTO sweets (id, name, category, price, quantity)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [sweetId, name, category, price, quantity]
+    );
+
+    // Fetch the created sweet
     const result = await query(
-      `INSERT INTO sweets (name, category, price, quantity)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, name, category, price, quantity, created_at, updated_at`,
-      [name, category, price, quantity]
+      'SELECT id, name, category, price, quantity, created_at, updated_at FROM sweets WHERE id = $1',
+      [sweetId]
     );
 
     return result.rows[0];
@@ -36,13 +45,13 @@ export class SweetService {
     let paramCount = 1;
 
     if (queryParams.name) {
-      sql += ` AND name ILIKE $${paramCount}`;
+      sql += ` AND LOWER(name) LIKE LOWER($${paramCount})`;
       params.push(`%${queryParams.name}%`);
       paramCount++;
     }
 
     if (queryParams.category) {
-      sql += ` AND category ILIKE $${paramCount}`;
+      sql += ` AND LOWER(category) LIKE LOWER($${paramCount})`;
       params.push(`%${queryParams.category}%`);
       paramCount++;
     }
@@ -101,18 +110,18 @@ export class SweetService {
     updates.push(`updated_at = CURRENT_TIMESTAMP`);
     params.push(id);
 
-    const result = await query(
-      `UPDATE sweets SET ${updates.join(', ')} WHERE id = $${paramCount}
-       RETURNING id, name, category, price, quantity, created_at, updated_at`,
+    await query(
+      `UPDATE sweets SET ${updates.join(', ')} WHERE id = $${paramCount}`,
       params
     );
 
-    return result.rows.length > 0 ? result.rows[0] : null;
+    // Fetch the updated sweet
+    return this.findById(id);
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await query('DELETE FROM sweets WHERE id = $1 RETURNING id', [id]);
-    return result.rows.length > 0;
+    const result = await query('DELETE FROM sweets WHERE id = $1', [id]);
+    return result.rowCount > 0;
   }
 
   async purchase(id: string, quantity: number): Promise<Sweet | null> {

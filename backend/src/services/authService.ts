@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 import { query } from '../database/connection';
 import { User, RegisterRequest, LoginRequest } from '../types';
 
@@ -17,10 +18,19 @@ export class AuthService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Generate UUID for user
+    const userId = uuidv4();
+
     // Insert user
+    await query(
+      'INSERT INTO users (id, email, password, role) VALUES ($1, $2, $3, $4)',
+      [userId, email, hashedPassword, 'user']
+    );
+
+    // Fetch the created user
     const result = await query(
-      'INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id, email, role, created_at',
-      [email, hashedPassword, 'user']
+      'SELECT id, email, role, created_at FROM users WHERE id = $1',
+      [userId]
     );
 
     const user = result.rows[0];

@@ -1,4 +1,4 @@
-import { query } from './connection';
+import { querySync } from './connection';
 import fs from 'fs';
 import path from 'path';
 
@@ -11,10 +11,12 @@ export const initializeDatabase = async () => {
     const statements = schema
       .split(';')
       .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .filter((s) => s.length > 0 && !s.startsWith('--'));
 
     for (const statement of statements) {
-      await query(statement);
+      if (statement) {
+        querySync(statement);
+      }
     }
 
     console.log('Database initialized successfully');
@@ -23,4 +25,3 @@ export const initializeDatabase = async () => {
     throw error;
   }
 };
-

@@ -3,8 +3,15 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import sweetRoutes from './routes/sweetRoutes';
+import { initializeDatabase } from './database/init';
 
 dotenv.config();
+
+// Initialize database on startup
+initializeDatabase().catch((err) => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
+});
 
 const app = express();
 const PORT = process.env.PORT || 3001;

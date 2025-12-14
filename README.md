@@ -31,7 +31,7 @@ A full-stack web application for managing a sweet shop inventory, built with Typ
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Language**: TypeScript
-- **Database**: PostgreSQL
+- **Database**: SQLite (better-sqlite3)
 - **Authentication**: JWT (JSON Web Tokens)
 - **Password Hashing**: bcryptjs
 - **Validation**: Zod
@@ -51,8 +51,9 @@ A full-stack web application for managing a sweet shop inventory, built with Typ
 Before you begin, ensure you have the following installed:
 - **Node.js** (v18 or higher)
 - **npm** (v9 or higher)
-- **PostgreSQL** (v12 or higher)
 - **Git**
+
+**Note**: This project uses SQLite, so no separate database server installation is required!
 
 ## 🚀 Setup Instructions
 
@@ -65,22 +66,9 @@ cd Incubyte
 
 ### 2. Database Setup
 
-1. Create a PostgreSQL database:
-```bash
-createdb sweet_shop_db
-```
+**No manual database setup required!** SQLite database will be automatically created and initialized when you start the backend server.
 
-Or using psql:
-```sql
-CREATE DATABASE sweet_shop_db;
-```
-
-2. Run the schema script to create tables:
-```bash
-psql -d sweet_shop_db -f backend/src/database/schema.sql
-```
-
-Alternatively, you can connect to your database and run the SQL commands from `backend/src/database/schema.sql`.
+The database file (`sweet_shop.db`) will be created in the `backend` directory automatically on first run.
 
 ### 3. Backend Setup
 
@@ -96,17 +84,23 @@ npm install
 
 3. Create a `.env` file in the `backend` directory:
 ```bash
+# Windows PowerShell
+Copy-Item env.example .env
+
+# Linux/Mac
 cp env.example .env
 ```
 
-4. Update the `.env` file with your database credentials:
+4. Update the `.env` file (optional - defaults work for development):
 ```env
 PORT=3001
-DATABASE_URL=postgresql://username:password@localhost:5432/sweet_shop_db
+DATABASE_PATH=./sweet_shop.db
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRES_IN=7d
 NODE_ENV=development
 ```
+
+**Note**: The database will be automatically created at the path specified in `DATABASE_PATH` (default: `./sweet_shop.db`).
 
 5. Start the backend server:
 ```bash
@@ -222,19 +216,26 @@ Incubyte/
 
 ## 👤 Default Admin User
 
-To create an admin user, you can either:
-1. Manually insert into the database:
-```sql
-INSERT INTO users (email, password, role) 
-VALUES ('admin@example.com', '<hashed_password>', 'admin');
-```
+To create an admin user:
 
-2. Or register a user and manually update the role in the database:
-```sql
+1. Register a user through the application (at `/register`)
+2. Update the user role to admin using one of these methods:
+
+**Option A: Using SQLite CLI**
+```bash
+# Open the database
+sqlite3 backend/sweet_shop.db
+
+# Update the user role
 UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+
+# Exit
+.quit
 ```
 
-**Note**: Passwords are hashed using bcrypt, so you'll need to hash the password before inserting.
+**Option B: Using a SQLite GUI tool** (like DB Browser for SQLite)
+- Open `backend/sweet_shop.db`
+- Run: `UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';`
 
 ## 🎨 Screenshots
 
