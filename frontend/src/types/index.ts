@@ -30,3 +30,16 @@ export interface RegisterCredentials {
   password: string;
 }
 
+export interface CreateSweetRequest {
+  name: string;
+  category: string;
+  price: number;
+  quantity: number;
+}
+
+export interface UpdateSweetRequest {
+  name?: string;
+  category?: string;
+  price?: number;
+  quantity?: number;
+}
