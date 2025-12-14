@@ -49,3 +49,20 @@ export interface SearchSweetsQuery {
   maxPrice?: string;
 }
 
+export interface Purchase {
+  id: string;
+  user_id: string;
+  sweet_id: string;
+  quantity: number;
+  total_price: number;
+  created_at: Date;
+}
+
+export interface PurchaseWithSweet extends Purchase {
+  sweet: {
+    name: string;
+    category: string;
+    image_url?: string | null;
+  } | null;
+}
+
