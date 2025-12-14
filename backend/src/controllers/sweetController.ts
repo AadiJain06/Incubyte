@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { SweetService } from '../services/sweetService';
+import { PurchaseService } from '../services/purchaseService';
 import { CreateSweetRequest, UpdateSweetRequest, SearchSweetsQuery } from '../types';
 import { z } from 'zod';
 
@@ -19,9 +20,11 @@ const updateSweetSchema = z.object({
 
 export class SweetController {
   private sweetService: SweetService;
+  private purchaseService: PurchaseService;
 
   constructor() {
     this.sweetService = new SweetService();
+    this.purchaseService = new PurchaseService();
   }
 
   create = async (req: Request, res: Response): Promise<void> => {
