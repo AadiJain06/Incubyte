@@ -131,11 +131,20 @@ export default function Admin() {
     if (editingSweet) {
       updateMutation.mutate(
         { id: editingSweet.id, ...sweetData },
-        { onSuccess: () => setIsFormOpen(false) }
+        { 
+          onSuccess: () => {
+            setIsFormOpen(false);
+            setEditingSweet(null);
+            setFormData(initialFormData);
+          }
+        }
       );
     } else {
       createMutation.mutate(sweetData, {
-        onSuccess: () => setIsFormOpen(false),
+        onSuccess: () => {
+          setIsFormOpen(false);
+          setFormData(initialFormData);
+        },
       });
     }
   };
@@ -268,7 +277,16 @@ export default function Admin() {
       </main>
 
       {/* Create/Edit Dialog */}
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+      <Dialog 
+        open={isFormOpen} 
+        onOpenChange={(open) => {
+          setIsFormOpen(open);
+          if (!open) {
+            setEditingSweet(null);
+            setFormData(initialFormData);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-display">

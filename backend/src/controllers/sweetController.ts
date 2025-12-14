@@ -78,6 +78,14 @@ export class SweetController {
     try {
       const { id } = req.params;
       const validatedData = updateSweetSchema.parse(req.body) as UpdateSweetRequest;
+      
+      // Check if sweet exists first
+      const existingSweet = await this.sweetService.findById(id);
+      if (!existingSweet) {
+        res.status(404).json({ error: 'Sweet not found' });
+        return;
+      }
+
       const sweet = await this.sweetService.update(id, validatedData);
       if (!sweet) {
         res.status(404).json({ error: 'Sweet not found' });
@@ -85,6 +93,7 @@ export class SweetController {
       }
       res.status(200).json(sweet);
     } catch (error: any) {
+      console.error('Update error:', error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ error: error.errors[0].message });
         return;

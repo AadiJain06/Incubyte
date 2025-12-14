@@ -67,8 +67,19 @@ export function useUpdateSweet() {
         quantity: updates.quantity,
       });
     },
-    onSuccess: () => {
+    onSuccess: (updatedSweet, variables) => {
+      // Invalidate all sweets queries to refetch fresh data
       queryClient.invalidateQueries({ queryKey: ['sweets'] });
+      // Also optimistically update the cache for immediate UI feedback
+      queryClient.setQueriesData({ queryKey: ['sweets'] }, (oldData: any) => {
+        if (!oldData) return oldData;
+        if (Array.isArray(oldData)) {
+          return oldData.map((sweet: Sweet) => 
+            sweet.id === variables.id ? { ...sweet, ...updatedSweet } : sweet
+          );
+        }
+        return oldData;
+      });
       toast.success('Sweet updated successfully!');
     },
     onError: (error: any) => {

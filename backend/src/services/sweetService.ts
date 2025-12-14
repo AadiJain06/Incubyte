@@ -107,13 +107,12 @@ export class SweetService {
       return this.findById(id);
     }
 
+    // Always update the updated_at timestamp
     updates.push(`updated_at = CURRENT_TIMESTAMP`);
     params.push(id);
 
-    await query(
-      `UPDATE sweets SET ${updates.join(', ')} WHERE id = $${paramCount}`,
-      params
-    );
+    const updateSql = `UPDATE sweets SET ${updates.join(', ')} WHERE id = $${paramCount}`;
+    await query(updateSql, params);
 
     // Fetch the updated sweet
     return this.findById(id);
