@@ -108,5 +108,12 @@ export const sweetsAPI = {
   },
 };
 
+export const purchasesAPI = {
+  getHistory: async (): Promise<any[]> => {
+    const response = await api.get<any[]>('/purchases/history');
+    return response.data;
+  },
+};
+
 export default api;
 

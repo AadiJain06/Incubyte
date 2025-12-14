@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import sweetRoutes from './routes/sweetRoutes';
+import purchaseRoutes from './routes/purchaseRoutes';
 import { initializeDatabase } from './database/init';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/sweets', sweetRoutes);
+app.use('/api/purchases', purchaseRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
