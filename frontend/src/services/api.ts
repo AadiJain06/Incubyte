@@ -22,10 +22,28 @@ export interface UpdateSweetRequest {
 
 // Get API URL from environment variable, with fallback
 // In production, this should be set to: https://incubyte-sweet.onrender.com/api
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD 
-    ? 'https://incubyte-sweet.onrender.com/api' 
-    : 'http://localhost:3001/api');
+// Note: VITE_API_URL must be set in Vercel environment variables
+const getApiBaseUrl = () => {
+  // Check if VITE_API_URL is explicitly set
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // Production fallback
+  if (import.meta.env.PROD) {
+    return 'https://incubyte-sweet.onrender.com/api';
+  }
+  
+  // Development fallback
+  return 'http://localhost:3001/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Log API URL in development for debugging
+if (import.meta.env.DEV) {
+  console.log('API Base URL:', API_BASE_URL);
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
