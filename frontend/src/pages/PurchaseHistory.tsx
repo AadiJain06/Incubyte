@@ -78,11 +78,11 @@ export default function PurchaseHistory() {
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl gradient-caramel flex items-center justify-center">
-                  <span className="text-xl font-bold text-primary-foreground">$</span>
+                  <span className="text-xl font-bold text-primary-foreground">₹</span>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Spent</p>
-                  <p className="text-2xl font-display font-bold">${totalSpent.toFixed(2)}</p>
+                  <p className="text-2xl font-display font-bold">₹{totalSpent.toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>

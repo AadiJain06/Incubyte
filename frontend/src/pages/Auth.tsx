@@ -92,7 +92,7 @@ export default function Auth() {
           setIsLoading(false);
           return;
         }
-        toast.success('Account created! Welcome to Sweet Shop!');
+        toast.success('Account created! Welcome to Kata Sweet Shop!');
         navigate('/');
       }
     } catch (error) {
@@ -120,7 +120,7 @@ export default function Auth() {
             </div>
             <div>
               <CardTitle className="text-2xl">
-                {isLogin ? 'Welcome Back!' : 'Join Sweet Shop'}
+                {isLogin ? 'Welcome Back!' : 'Join Kata Sweet Shop'}
               </CardTitle>
               <CardDescription className="mt-2">
                 {isLogin 

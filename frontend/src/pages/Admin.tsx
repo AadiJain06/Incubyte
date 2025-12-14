@@ -215,7 +215,7 @@ export default function Admin() {
                           <Badge variant="secondary">{sweet.category}</Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          ${Number(sweet.price).toFixed(2)}
+                          ₹{Number(sweet.price).toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right">
                           <Badge 
@@ -322,7 +322,7 @@ export default function Admin() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="price">Price ($) *</Label>
+                <Label htmlFor="price">Price (₹) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -330,7 +330,7 @@ export default function Admin() {
                   min="0"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="9.99"
+                  placeholder="99.99"
                 />
               </div>
               <div className="grid gap-2">

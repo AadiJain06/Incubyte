@@ -91,7 +91,7 @@ export const Dashboard: React.FC = () => {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>🍬 Sweet Shop Management</h1>
+          <h1>🍬 Kata Sweet Shop Management</h1>
           <div className="header-actions">
             <span className="user-info">Welcome, {user?.email}</span>
             {isAdmin && <span className="admin-badge">Admin</span>}

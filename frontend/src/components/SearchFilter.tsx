@@ -109,8 +109,8 @@ export function SearchFilter({
                     className="w-full"
                   />
                   <div className="flex justify-between mt-2 text-sm text-muted-foreground">
-                    <span>${localPriceRange[0]}</span>
-                    <span>${localPriceRange[1]}</span>
+                    <span>₹{localPriceRange[0]}</span>
+                    <span>₹{localPriceRange[1]}</span>
                   </div>
                 </div>
               </div>

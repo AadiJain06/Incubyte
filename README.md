@@ -1,6 +1,6 @@
-# Sweet Shop Management System
+# Kata Sweet Shop Management System
 
-A full-stack web application for managing a sweet shop inventory, built with TypeScript, Express, React, and PostgreSQL. This project demonstrates Test-Driven Development (TDD), clean coding practices, and modern development workflows.
+A full-stack web application for managing a sweet shop inventory, built with TypeScript, Express, React, and SQLite. This project demonstrates Test-Driven Development (TDD), clean coding practices, and modern development workflows.
 
 ## 🎯 Features
 

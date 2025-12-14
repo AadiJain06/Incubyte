@@ -56,7 +56,7 @@ export default function Index() {
           <div className="absolute inset-0">
             <img 
               src={heroBanner} 
-              alt="Sweet Shop Interior" 
+              alt="Kata Sweet Shop Interior" 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
@@ -69,7 +69,7 @@ export default function Index() {
             </div>
             
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg">
-              Welcome to <span className="text-gradient-candy">Sweet Shop</span>
+              Welcome to <span className="text-gradient-candy">Kata Sweet Shop</span>
             </h1>
             
             <p className="text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto font-body drop-shadow">

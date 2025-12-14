@@ -47,7 +47,7 @@ export const Register: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Sweet Shop</h1>
+        <h1>Kata Sweet Shop</h1>
         <h2>Register</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>

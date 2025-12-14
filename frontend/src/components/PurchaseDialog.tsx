@@ -51,7 +51,7 @@ export function PurchaseDialog({ sweet, isOpen, onClose, onConfirm, isLoading }:
         <DialogHeader>
           <DialogTitle className="font-display text-xl">Purchase {sweet.name}</DialogTitle>
           <DialogDescription>
-            ${Number(sweet.price).toFixed(2)} each · {sweet.quantity} in stock
+            ₹{Number(sweet.price).toFixed(2)} each · {sweet.quantity} in stock
           </DialogDescription>
         </DialogHeader>
 
@@ -90,7 +90,7 @@ export function PurchaseDialog({ sweet, isOpen, onClose, onConfirm, isLoading }:
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Total</span>
               <span className="text-2xl font-display font-bold text-primary">
-                ${totalPrice.toFixed(2)}
+                ₹{totalPrice.toFixed(2)}
               </span>
             </div>
           </div>

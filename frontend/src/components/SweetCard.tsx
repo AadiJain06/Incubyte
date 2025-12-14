@@ -72,7 +72,7 @@ export function SweetCard({ sweet, onPurchase, isAuthenticated }: SweetCardProps
         )}
         <div className="flex items-center justify-between pt-2">
           <span className="text-2xl font-display font-bold text-primary">
-            ${Number(sweet.price).toFixed(2)}
+            ₹{Number(sweet.price).toFixed(2)}
           </span>
           <div className="flex items-center gap-1 text-muted-foreground">
             <Package className="w-4 h-4" />
